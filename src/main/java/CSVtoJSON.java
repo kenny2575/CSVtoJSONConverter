@@ -65,5 +65,10 @@ public class CSVtoJSON extends Converter{
         }
     }
 
+    @Override
+    public String toString(){
+        return "File name is " + this.fileName;
+    }
+
 
 }

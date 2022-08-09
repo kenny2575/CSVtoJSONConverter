@@ -1,14 +1,18 @@
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class CSVtoJSONTests {
 
@@ -24,7 +28,7 @@ public class CSVtoJSONTests {
         sut = new CSVtoJSON("data.csv");
         String column = "id,firstName,lastName,country,age";
         sut.setColumnMapping(column.split(","));
-        System.out.println("test # " + ++testNumber + " started");
+        System.out.println("test #" + ++testNumber + " started");
     }
 
     @AfterEach
@@ -38,13 +42,12 @@ public class CSVtoJSONTests {
     }
 
     @Test
-    public void countOfRows() throws FileNotFoundException {
+    public void countOfRowsJunitStyle() throws FileNotFoundException {
         int expected = 2;
         List<Employee> lt;
         lt = sut.parseCSV();
         assertEquals(expected, lt.stream().count());
     }
-
     @ParameterizedTest
     @MethodSource("source")
     public void testParsedException(String fileName){
@@ -67,5 +70,26 @@ public class CSVtoJSONTests {
                 //act
                 () -> sut.writeString(json)
         );
+    }
+
+    @Test
+    public void countOfRowsHamcrestStyle() throws FileNotFoundException {
+        List<Employee> lt = sut.parseCSV();
+        assertThat(lt, hasSize(2));
+    }
+    @Test
+    public void check2ClassesExtends(){
+        assertThat(sut.getClass(), typeCompatibleWith(Converter.class));
+    }
+
+    @Test
+    public void check2ClassesNotExtends(){
+        assertThat(sut.getClass(), is(not(typeCompatibleWith(Employee.class))));
+    }
+
+    @Test
+    public void checkHasToString() throws FileNotFoundException {
+        String str= "File name is data.csv";
+        assertThat(sut,hasToString(str));
     }
 }

@@ -24,4 +24,22 @@ public class Employee {
                 "; country = " + this.country +
                 "; age = " + age;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj == this){
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Employee empl = (Employee) obj;
+
+        return this.id == empl.id
+                && this.firstName == empl.firstName
+                && this.lastName == empl.lastName
+                && this.country == empl.country
+                && this.age == empl.age;
+    }
 }
